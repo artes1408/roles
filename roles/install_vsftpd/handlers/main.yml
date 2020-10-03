@@ -1,0 +1,9 @@
+---
+  - name: restart {{ package_name }} service CentOS
+    service: name={{ package_name }} state=restarted
+    when: ansible_os_family == "RedHat"
+  - name: start {{ package_name }} service CentOS
+    service: name={{ package_name }} state=started
+    when: ansible_os_family == "RedHat"
+  - name: run restorecon
+    command: restorecon -vR /var/ftp/pub

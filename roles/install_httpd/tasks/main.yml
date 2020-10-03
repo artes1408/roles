@@ -1,0 +1,37 @@
+---
+- name: install {{ package_name }}
+  hosts: all
+  tasks:
+  - name: Check version Linux
+    debug: var=ansible_os_family
+    
+  - block:
+    - name: install {{ package_name }}
+      yum: name={{ package_name }} update_cache=yes state=latest
+      notify: start {{ package_name }} service CentOS
+    - name: run firewalld service
+      service: name=firewalld state=started
+    - name: get service facts
+      service_facts:
+    - name: check firewalld status
+      debug:
+        var: ansible_facts.services["firewalld.service"]
+    - name: open https port
+      firewalld:
+        port: {{ https_port}}
+        permanent: yes
+        state: enabled
+    - name: open http port
+      firewalld:
+        port: {{ http_port }}
+        permanent: yes
+        state: enabled
+    when: ansible_os_family == "CentOS"
+    
+  - name: Copy files in {{ destin_folder }}
+    copy: src={{ item }} dest={{ destin_folder }} mode=0555
+    loop:
+      - "index.html"
+    notify:
+      - restart {{ package_name }} service CentOS
+...

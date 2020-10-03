@@ -1,0 +1,5 @@
+---
+  package_name: vsftpd
+  conf_file: /etc/vsftpd/vsftpd.conf
+  ftp_port: 20/tcp
+  pub_dir: /var/ftp/pub

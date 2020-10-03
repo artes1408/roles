@@ -1,0 +1,51 @@
+---
+- name: install {{ package_name }}
+  hosts: all
+  tasks:
+  - name: Check version Linux
+    debug: var=ansible_os_family
+    
+  - block:
+    - name: install {{ package_name }}
+      yum: name={{ package_name }} update_cache=yes state=latest
+    - name: modify config from template
+      template:
+        src: vsftpd.j2
+        dest: /etc/vsftpd/vsftpd.conf
+    - name: Give insecure permissions to pub {{ pub_dir }}
+      file:
+        path: "{{ pub_dir }}"
+        state: directory
+        owner: ftp
+        mode: '0777'
+    - name: install required selinux tools
+      yum:
+        name: policycoreutils-python
+        state: present
+    - name: Set ftpd_anon_write flag on and keep it persistent across reboots
+      ansible.posix.seboolean:
+        name: ftpd_anon_write
+        state: yes
+        persistent: yes
+    - name: manage selinux settings
+      sefcontext:
+        target: /var/ftp/pub
+        setype: public_content_rw_t
+        state: present
+      notify:
+        - run restorecon
+    - notify:
+      - restart {{ package_name }} service CentOS
+    - name: get service facts
+      service_facts:
+    - name: check firewalld status
+      debug:
+        var: ansible_facts.services["firewalld.service"]
+    - name: open ftp port
+      firewalld:
+        port: {{ ftp_port }}
+        permanent: yes
+        state: enabled
+    when: ansible_os_family == "RedHat"
+
+...
