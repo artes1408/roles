@@ -5,7 +5,8 @@
   - block:
     - name: install {{ package_name }}
       yum: name={{ package_name }} update_cache=yes state=latest
-      notify: start {{ package_name }} service CentOS
+    - name: start {{ package_name }} service CentOS
+      service: name={{ package_name }} state=started
     - name: run firewalld service
       service: name=firewalld state=started
     - name: get service facts
