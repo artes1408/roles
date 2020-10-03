@@ -23,7 +23,7 @@
         port: "{{ http_port }}"
         permanent: yes
         state: enabled
-    when: ansible_os_family == "CentOS"
+    when: ansible_os_family == "RedHat"
     
   - name: copy files in {{ dest_folder }}
     copy: src={{ item }} dest={{ dest_folder }} mode=0555
