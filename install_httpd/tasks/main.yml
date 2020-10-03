@@ -30,5 +30,5 @@
     loop:
       - "index.html"
     notify:
-      - restart Apache CentOS
+      - restart {{ package_name }} service CentOS
 ...
