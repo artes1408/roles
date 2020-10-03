@@ -18,7 +18,7 @@
         var: ansible_facts.services["firewalld.service"]
     - name: open https port
       firewalld:
-        port: {{ https_port}}
+        port: {{ https_port }}
         permanent: yes
         state: enabled
     - name: open http port
