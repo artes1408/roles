@@ -1,6 +1,4 @@
 ---
-- name: install apache
-  tasks:
   - name: Check version Linux
     debug: var=ansible_os_family
     
@@ -27,8 +25,8 @@
         state: enabled
     when: ansible_os_family == "CentOS"
     
-  - name: Copy files in {{ destin_folder }}
-    copy: src={{ item }} dest={{ destin_folder }} mode=0555
+  - name: Copy files in {{ dest_folder }}
+    copy: src={{ item }} dest={{ dest_folder }} mode=0555
     loop:
       - "index.html"
     notify:
