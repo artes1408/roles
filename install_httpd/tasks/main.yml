@@ -1,6 +1,5 @@
 ---
 - name: install apache
-  hosts: all
   tasks:
   - name: Check version Linux
     debug: var=ansible_os_family
